@@ -1,7 +1,7 @@
 int numColors = 360/10;
 int wheelDiameter = 250;
 float colorSpacing = 0.25;
-int wheelThickness = 10;
+int wheelThickness = 20;
 ArrayList<Point> points = new ArrayList<Point>();
 boolean showText = false;
 boolean lockPoints = true;
@@ -20,7 +20,7 @@ void setup()
 }
 
 void draw(){
-   background(0);
+   background(360);
   
   strokeWeight(wheelThickness);
   noFill();
@@ -41,13 +41,15 @@ void draw(){
   }
   strokeWeight(1);
   fill(255);
-  textSize(14);
-  stroke(255);
-  fill(360);
-  textAlign(LEFT, LEFT);
+  textSize(11);
+  stroke(0);
+  fill(0);
+  textAlign(CENTER, CENTER);
   if(showText){
-    text("keys:\n\tf = toggle fixed points\n\tl = toggle lines\n\tr = toggle animate", -160, height/2-70);
-    text("mouse:\n\tclick = add color trace\n\tctrl-click = remove color trace\n\tclick & drag = move color trace", -10, height/2-70);
+     
+    text("keys:\n\tf = toggle fixed points\n\tl = toggle lines\n\tr = toggle animate", 0, -height/2 + 35);
+    //textAlign(RIGHT, RIGHT);
+    text("mouse:\n\tclick = add color trace\n\tctrl-click = remove color trace\n\tclick & drag = move color trace", 0, height/2-35);
   }else{
     text("t = toggle text", -50, height/2 - 10);
   }
@@ -64,11 +66,14 @@ void draw(){
     for(int i = 0 ; i < points.size(); i++)
       line(points.get(i).x - dotSize, points.get(i).y - dotSize, 0, 0);
   }
-  
+  textAlign(CENTER, CENTER);
   for(Point p : points){
    stroke(0);
    fill(GetColorFromAngle(p.angle));
    arcBound(p.x - dotSize, p.y - dotSize, 80, 80, p.angle - radians(30), p.angle + radians(30));
+   fill(0);
+   if(showText)
+     text(degrees(p.angle) % 360, (int)(wheelDiameter/1.4 * cos(p.angle)),(int)(wheelDiameter/1.4* sin(p.angle)));
    println("angle = " + p.angle);
   }
   
@@ -77,8 +82,9 @@ void draw(){
   if(points.size() > 0){
   fill(0);
   stroke(360);
-  textAlign(CENTER, CENTER);
+  
   textSize(18);
+  noStroke();
   color c = GetColorFromAngle(points.get(0).angle);
   if(showText)
     text("#" + hex(c), -width/2 + width/12 , -height/2 + (height/points.size())/2);  //-width/2
@@ -90,7 +96,7 @@ void draw(){
       rect(-width/2,  -height/2 + (height/points.size()) + i * (height/points.size()), width/6, -(height/points.size()));
       rect( width/2 - width/6,  -height/2 + (height/points.size()) + i * (height/points.size()), width/6, -(height/points.size()));  
       fill(360);
-      stroke(360);
+      
       if(showText)
         text("#"+hex(c), -width/2 + width/12 , -height/2 + (height/points.size()) + i * (height/points.size()) - (height/points.size()) / 2);  //-width/2
     }
@@ -106,7 +112,7 @@ void draw(){
 }
 
 void arcBound( float x, float y, float w, float h, float s, float e ){
-  stroke(360);
+  stroke(0);
   strokeWeight(3);
   arc(x, y, w, h, s, e );
   line( x, y, x + w/2.0 * cos(s), y + h/2.0 * sin(s) );
@@ -181,7 +187,7 @@ void mouseDragged(){
          points.get(foundIndex).x = (int)(wheelDiameter/2 * cos(points.get(foundIndex).angle)) + 15; 
          points.get(foundIndex).y = (int)(wheelDiameter/2 * sin(points.get(foundIndex).angle)) + 15;
        }else{
-         RotatePoints(foundIndex,  atan2(height/2 - mouseY,width/2 - mouseX));
+         RotatePoints(foundIndex,  atan2(mouseY - height/2 ,mouseX - width/2));
        }
    }
 }
