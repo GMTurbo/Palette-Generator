@@ -20,12 +20,15 @@ void setup()
 }
 
 void draw(){
-   background(360);
+   background(0);
   
   strokeWeight(wheelThickness);
   noFill();
   smooth();
   strokeCap(SQUARE);
+  
+  speed = keyPressed ? speed - speed/100 : speed - speed/5;
+  
   
   int colorAngle = 360 / numColors;
   
@@ -40,10 +43,10 @@ void draw(){
     arc(0, 0, wheelDiameter, wheelDiameter, radians(startAngle), radians(stopAngle));
   }
   strokeWeight(1);
-  fill(255);
+  //fill(255);
   textSize(11);
-  stroke(0);
-  fill(0);
+  stroke(360);
+  fill(360);
   textAlign(CENTER, CENTER);
   if(showText){
      
@@ -71,7 +74,7 @@ void draw(){
    stroke(0);
    fill(GetColorFromAngle(p.angle));
    arcBound(p.x - dotSize, p.y - dotSize, 80, 80, p.angle - radians(30), p.angle + radians(30));
-   fill(0);
+   fill(360);
    if(showText)
      text(degrees(p.angle) % 360, (int)(wheelDiameter/1.4 * cos(p.angle)),(int)(wheelDiameter/1.4* sin(p.angle)));
    println("angle = " + p.angle);
@@ -80,46 +83,49 @@ void draw(){
   stroke(360);
   //noFill();
   if(points.size() > 0){
-  fill(0);
-  stroke(360);
+    fill(0);
+    stroke(360);
   
-  textSize(18);
-  noStroke();
-  color c = GetColorFromAngle(points.get(0).angle);
-  if(showText)
-    text("#" + hex(c), -width/2 + width/12 , -height/2 + (height/points.size())/2);  //-width/2
+    textSize(18);
+    noStroke();
+    color c = GetColorFromAngle(points.get(0).angle);
+    if(showText)
+      text("#" + hex(c), -width/2 + width/12 , -height/2 + (height/points.size())/2);  //-width/2
 
-  for(int i = 0 ; i< points.size(); i++){
-      c = GetColorFromAngle(points.get(i).angle);
-     
-      fill(c);
-      rect(-width/2,  -height/2 + (height/points.size()) + i * (height/points.size()), width/6, -(height/points.size()));
-      rect( width/2 - width/6,  -height/2 + (height/points.size()) + i * (height/points.size()), width/6, -(height/points.size()));  
-      fill(360);
-      
-      if(showText)
-        text("#"+hex(c), -width/2 + width/12 , -height/2 + (height/points.size()) + i * (height/points.size()) - (height/points.size()) / 2);  //-width/2
-    }
+    for(int i = 0 ; i< points.size(); i++){
+        c = GetColorFromAngle(points.get(i).angle);
+       
+        fill(hue(c), saturation(c), brightness(c), 255);
+        rect(-width/2,  -height/2 + (height/points.size()) + i * (height/points.size()), width/6, -(height/points.size()));
+        rect( width/2 - width/6,  -height/2 + (height/points.size()) + i * (height/points.size()), width/6, -(height/points.size()));  
+        fill(360);
+        
+        if(showText)
+          text("#"+hex(c), -width/2 + width/12 , -height/2 + (height/points.size()) + i * (height/points.size()) - (height/points.size()) / 2);  //-width/2
+      }
   }
   
   if(run){
     if(lockPoints)
       RotatePoints(0,  rotation % (2*PI));
-    else
+    else{
       RotatePoints(-1,  speed);
+    }
     rotation += speed;
+  }else{
+   speed = speed < 0 ? -PI/135 : PI/135; 
   }
 }
 
 void arcBound( float x, float y, float w, float h, float s, float e ){
-  stroke(0);
-  strokeWeight(3);
+  stroke(360);
+  strokeWeight(2);
   arc(x, y, w, h, s, e );
   line( x, y, x + w/2.0 * cos(s), y + h/2.0 * sin(s) );
   line( x, y, x + w/2.0 * cos(e), y + h/2.0 * sin(e) );
 }
 
-float speed = PI/100;
+float speed = PI/135;
 float rotation = 0;
 
 void AddPointToColorCircle(int x, int y){
@@ -230,6 +236,7 @@ void mousePressed(){
        points.remove(foundIndex);
   //}
 }
+
 boolean run = false;
 void keyPressed(){
   if(key == 'r'){
